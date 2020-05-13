@@ -38,19 +38,28 @@ CookBook = receipt_read('receipt.txt')
 
 def To_cook(ToCook,person):
     person = int(person)
-#    person = 3
+    DishTmp = str
+    ToCookTmp = []
+
     i = 0
     ingridients_for_dish = {} #Итоговый словарь, по идее
     temp = {}
 #    ToCook = ['Каша из Топора','Омлет','Попеченный картофель','Попеченный картофель 2'] #задание блюд для вычислений
 
     try:
+        for DishToCook in ToCook: # Добавлена проверка дублирования
+            if DishToCook == DishTmp:
+                person *= 2
+            else:
+                ToCookTmp.append(DishToCook)
+            DishTmp = DishToCook
+        ToCook = ToCookTmp
+#        print (ToCook)
         for DishToCook in ToCook: # Для блюд, которые выбраны для заказа
-            #        pprint (CookBook[DishToCook])
             for ingred in CookBook[DishToCook]: # ингредиенты для каждого блюда
                 new_ingridient_for_dish = ingred #загружаю в новый временный словарь
                 new_ingridient_for_dish['quantity'] *= person  #умножаю кол-во в соотв с персонами
-    #            print(ingred)
+
                 if new_ingridient_for_dish['Ingredient'] not in ingridients_for_dish: # Если в итоговом списке нет ингредиента
                     final_ingred = new_ingridient_for_dish.get('Ingredient') #Для финального словаря заголовок ингредиента
                     del new_ingridient_for_dish['Ingredient'] #Удаление из временного словаря ключа "Ингредиент"
@@ -69,13 +78,11 @@ def To_cook(ToCook,person):
 
 
 def main():  # обработчик команд
-#    noCookBook = receipt_read('receipt.txt')
     while True:
         user_input = input('Чтение рецептов (r) или список продуктов для блюд (d). ДЛя выхода q ')
         if user_input.lower() == 'd':
-#            user_input_dish = input("Перечень блюд: ")
-#            user_input_person: int = input("Кол-во персон: ")
-            To_cook(['Каша из Топора','Омлет','Попеченный картофель','Попеченный картофель 2'],3)
+            To_cook(['Каша из Топора','Омлет','Попеченный картофель','Попеченный картофель'],3)
+
         if user_input.lower() == 'r':
             CookBook = receipt_read('receipt.txt')
             pprint(CookBook)
@@ -83,4 +90,21 @@ def main():  # обработчик команд
             print('bye')
             break
 
+def teacher_function():
+    with open('receips.txt') as f:
+        cook_book = {}
+        for line in f:
+            name_dishes = line.strip()
+            amount_ingredients = int(f.readline().strip())
+            ingredients_list = []
+            while amount_ingredients != 0:
+                ingredients = f.readline().strip().split('|')
+                ingredients_dict = {'ingredient_name': ingredients[0], 'quantity': ingredients[1], 'measure': ingredients[2]}
+                amount_ingredients -= 1
+                ingredients_list.append(ingredients_dict)
+            f.readline().strip()
+            cook_book_new = {name_dishes: ingredients_list}
+            cook_book.update(cook_book_new)
+
+#To_cook(['Каша из Топора','Омлет','Попеченный картофель','Попеченный картофель'],3)
 main()
